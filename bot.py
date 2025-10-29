@@ -11,7 +11,7 @@ load_dotenv()
 bot = Bot(token=os.getenv('API'))
 dp = Dispatcher()
 dp.include_routers(user_router)
-user_router.message.middleware(SubscribeMiddleware(bot=bot, chat_id=-1003244158184))
+# user_router.message.middleware(SubscribeMiddleware(bot=bot, chat_id=-1003244158184))
 
 async def main():
     print('FORCE I RUN')
