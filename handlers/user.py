@@ -1,9 +1,15 @@
 from aiogram import Router, F
 from aiogram.filters import CommandStart, Command
-from aiogram.types import Message
+from aiogram.types import (Message,
+                           KeyboardButton,
+                           CallbackQuery,
+                           FSInputFile,
+                           ReplyKeyboardMarkup,
+                           KeyboardButtonRequestUser,
+                           InlineKeyboardButton)
 from aiogram.fsm.context import FSMContext # <---
 from aiogram.fsm.state import State, StatesGroup # <---
-
+from aiogram.utils.keyboard import InlineKeyboardBuilder
 
 user = Router()
 
@@ -28,11 +34,18 @@ async def get_name(message: Message, state: FSMContext):
 
 @user.message(HotelState.waiting_for_name)
 async def get_room(message: Message, state: FSMContext):
+    kb = [
+        [KeyboardButton(text='Luxe')],
+        [KeyboardButton(text='Standard')],
+        [KeyboardButton(text='President')],
+        [KeyboardButton(text='Vip')]
+    ]
+    markup = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
     await state.update_data(name=message.text)
     await state.set_state(HotelState.waiting_for_room)
     # Демонстрировать имеющиеся комнаты через ReplyKeyboard
     # Пример: Люкс/Обычный/Президентский/VIP
-    await message.answer('Введите желаемую комнату:')
+    await message.answer('Введите желаемую комнату:', reply_markup=markup)
 
 
 @user.message(HotelState.waiting_for_room)
@@ -51,6 +64,15 @@ async def get_phone(message: Message, state: FSMContext):
 
 @user.message(HotelState.waiting_for_phone)
 async def finish(message: Message, state: FSMContext):
+    kb = InlineKeyboardBuilder()
+    kb.add(InlineKeyboardButton(
+        text='Все правильно',
+        callback_data='okey'
+    ))
+    kb.add(InlineKeyboardButton(
+        text='Корректировать',
+        callback_data='reserv'
+    ))
     await state.update_data(phone=message.text)
     data = await state.get_data()
     print(data)
@@ -67,9 +89,25 @@ async def finish(message: Message, state: FSMContext):
         f'ФИО: {data.get('name')}\n'
         f'Комната: {data.get('room')}\n'
         f'Дата: {data.get('date')}\n'
-        f'Телефон: {data.get('phone')}'
+        f'Телефон: {data.get('phone')}',
+        reply_markup=kb.as_markup()
     )
 
+@user.callback_query(F.data == 'okey')
+async def okey(callback: CallbackQuery, state: FSMContext):
+    data = state.get_data()
+    await callback.answer('Номер зарезервирован!')
+    with open('client.txt', mode='a', encoding='utf-8') as reserv_:
+        reserv_.write(f'{data}')
+    await callback.message.answer('Номер зарезервирован!')
+
+
+@user.callback_query(F.data == 'reserv')
+async def reserv(callback: CallbackQuery):
+    kb = [KeyboardButton(text='/reserv')]
+    markup = ReplyKeyboardMarkup(keyboard=kb, resize_keyboard=True)
+    await callback.answer('Повторите процесс бронирования!')
+    await callback.message.answer('Повторите процесс бронирования!', reply_markup=markup)
 
 
 
