@@ -117,4 +117,3 @@ async def approve(callback: CallbackQuery, state: FSMContext):
 @reserve.callback_query(F.data == 'reserve')
 async def repeat(callback: CallbackQuery):
     await callback.message.edit_text('Повторите процесс бронирования - /reserve')
-

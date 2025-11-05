@@ -4,24 +4,29 @@ import os
 from aiogram import Bot, Dispatcher
 from dotenv import load_dotenv
 
-from handlers.reserve_fsm import reserve as reserve_router
+from states.reserve_room import reserve as reserve_fsm
+from states.add_rooms import add as add_fsm
 from handlers.admin import admin as admin_router
 from handlers.user import user as user_router
-from middlewares.subscribe import SubscribeMiddleware
+from database.db import db_manager
+
 
 load_dotenv()
 bot = Bot(token=os.getenv('API'))
 dp = Dispatcher()
-dp.include_routers(reserve_router, admin_router, user_router)
-# user_router.message.middleware(SubscribeMiddleware(bot=bot, chat_id=-1003244158184))
+
+dp.include_routers(
+    reserve_fsm, add_fsm,
+    admin_router, user_router
+)
+
 
 async def main():
     print('FORCE I RUN')
+    db_manager.init_database()
     await dp.start_polling(bot)
     print('FORCE I STOPPED')
 
 
-
-# ~dfsf
 if __name__ == '__main__':
     asyncio.run(main())

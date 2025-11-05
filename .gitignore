@@ -2,3 +2,5 @@
 .idea
 .venv
 client.json
+__pycache__
+rooms.db
