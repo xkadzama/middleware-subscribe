@@ -7,7 +7,6 @@ from aiogram.fsm.context import FSMContext
 
 from database.db import db_manager
 
-
 add = Router()
 
 
@@ -48,7 +47,7 @@ async  def room_price(message: Message, state: FSMContext):
 async def rooms_status(message: Message, state: FSMContext):
     await state.update_data(price = message.text)
     await state.set_state(RoomsState.waiting_for_status)
-    await message.answer('укажите занята ли комната если занята то напишите укажите цифрами если заната то цифра "1" в ином случае цифра "2"')
+    await message.answer('укажите занята ли комната если занята то напишите укажите цифрами если заната то цифра "1" в ином случае цифра "0"')
 
 
 @add.message(RoomsState.waiting_for_status)
