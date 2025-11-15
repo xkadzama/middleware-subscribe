@@ -9,6 +9,7 @@ from states.add_rooms import add as add_fsm
 from handlers.admin import admin as admin_router
 from handlers.user import user as user_router
 from database.db import db_manager
+from meddleware.mdw import CheckAdmin
 
 
 load_dotenv()
@@ -19,6 +20,7 @@ dp.include_routers(
     reserve_fsm, add_fsm,
     admin_router, user_router
 )
+admin_router.message.middleware.register(CheckAdmin())
 
 
 async def main():

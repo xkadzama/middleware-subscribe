@@ -29,6 +29,7 @@ class HotelState(StatesGroup):
 @reserve.message(CommandStart())
 async def start(message: Message):
     await message.answer('Добро пожаловать!')
+    print(message.from_user.id)
 
 
 @reserve.message(Command('reserve'))

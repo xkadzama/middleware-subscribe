@@ -6,9 +6,9 @@ import sqlite3
 user = Router()
 
 
-@user.message(CommandStart())
-async def start_bot(message: Message):
-    await message.answer('Добро пожаловать!')
+# @user.message(CommandStart())
+# async def start_bot(message: Message):
+#     await message.answer('Добро пожаловать!')
 
 
 @user.message(Command('rooms'))
