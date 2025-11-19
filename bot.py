@@ -21,7 +21,7 @@ dp.include_routers(
     reserve_fsm, add_fsm,
     admin_router, user_router
 )
-admin_router.message.middleware.register(CheckAdmin())
+add_fsm.message.middleware.register(CheckAdmin())
 
 
 async def main():

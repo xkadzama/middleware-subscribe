@@ -2,15 +2,14 @@ from aiogram import BaseMiddleware
 from typing import Callable, Dict, Awaitable, Any
 from aiogram.types import Update
 import os
-
-load_dotenv()
-admID = os.getenv('ADMID')
+from dotenv import load_dotenv
 
 
 
 class CheckAdmin(BaseMiddleware):
     def __init__(self):
-        self.admins = [admID]
+        load_dotenv()
+        self.admins = [os.getenv('ADMID')]
 
     async def __call__(
             self,
