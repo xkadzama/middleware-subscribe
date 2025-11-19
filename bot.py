@@ -9,6 +9,7 @@ from states.add_rooms import add as add_fsm
 from handlers.admin import admin as admin_router
 from handlers.user import user as user_router
 from database.db import db_manager
+# from database.db import db_emoji
 from meddleware.mdw import CheckAdmin
 
 
@@ -26,6 +27,7 @@ admin_router.message.middleware.register(CheckAdmin())
 async def main():
     print('FORCE I RUN')
     db_manager.init_database()
+    # db_emoji.init_database()
     await dp.start_polling(bot)
     print('FORCE I STOPPED')
 

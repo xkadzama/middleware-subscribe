@@ -48,5 +48,49 @@ class DataManager:
         conn.close()
         return rooms
 
+# class EmojiManager:
+#     def __init__(self, db_name='rooms.db'):
+#         self.db_name = db_name
+#
+#     def db_connect(self):
+#         conn = sqlite3.connect(self.db_name)
+#         cursor = conn.cursor()
+#         return conn, cursor
+#
+#
+#     def init_database(self):
+#         conn, cursor = self.db_connect()
+#         cursor.execute('''
+#         CREATE TABLE IF NOT EXISTS emojis (
+#         id INTEGER PRIMARY KEY,
+#         name TEXT,
+#         tg_id INTEGER
+#         )
+#         ''')
+#         conn.commit()
+#         conn.close()
+#
+#     def add_emojis(self, name: str, tg_id: int):
+#         conn, cursor = self.db_connect()
+#         cursor.execute('''
+#         INSERT INTO emojis (name, tg_id)
+#         VALUES (?, ?)
+#         ''', (name, tg_id)
+#                        )
+#         conn.commit()
+#         conn.close()
+#
+#     def get_emojis(self, name: str):
+#         conn, cursor = self.db_connect()
+#         cursor.execute('''
+#         SELECT * FROM emojis WHERE name = ?
+#         ''', (name,)
+#                     )
+#         emojis = cursor.fetchall()
+#         conn.close()
+#         return emojis
+#
+
 
 db_manager = DataManager()
+# db_emoji = EmojiManager()
