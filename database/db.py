@@ -48,49 +48,50 @@ class DataManager:
         conn.close()
         return rooms
 
-# class EmojiManager:
-#     def __init__(self, db_name='rooms.db'):
-#         self.db_name = db_name
-#
-#     def db_connect(self):
-#         conn = sqlite3.connect(self.db_name)
-#         cursor = conn.cursor()
-#         return conn, cursor
-#
-#
-#     def init_database(self):
-#         conn, cursor = self.db_connect()
-#         cursor.execute('''
-#         CREATE TABLE IF NOT EXISTS emojis (
-#         id INTEGER PRIMARY KEY,
-#         name TEXT,
-#         tg_id INTEGER
-#         )
-#         ''')
-#         conn.commit()
-#         conn.close()
-#
-#     def add_emojis(self, name: str, tg_id: int):
-#         conn, cursor = self.db_connect()
-#         cursor.execute('''
-#         INSERT INTO emojis (name, tg_id)
-#         VALUES (?, ?)
-#         ''', (name, tg_id)
-#                        )
-#         conn.commit()
-#         conn.close()
-#
-#     def get_emojis(self, name: str):
-#         conn, cursor = self.db_connect()
-#         cursor.execute('''
-#         SELECT * FROM emojis WHERE name = ?
-#         ''', (name,)
-#                     )
-#         emojis = cursor.fetchall()
-#         conn.close()
-#         return emojis
-#
+class ReactionManager:
+    def __init__(self, db_name='rooms.db'):
+        self.db_name = db_name
 
+    def db_connect(self):
+        conn = sqlite3.connect(self.db_name)
+        cursor = conn.cursor()
+        return conn, cursor
+
+    def init_database(self):
+        conn, cursor = self.db_connect()
+        cursor.execute('''
+                CREATE TABLE IF NOT EXISTS user_reactions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    room_id INTEGER NOT NULL,
+                    reaction TEXT,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(user_id, room_id)
+                )
+            ''')
+        conn.commit()
+        conn.close()
+
+    def add_reaction(self, user_id, room_id, reaction: str):
+        conn, cursor = self.db_connect()
+        cursor.execute('''
+                    INSERT OR REPLACE INTO user_reactions 
+                    (user_id, room_id, reaction) 
+                    VALUES (?, ?, ?)
+                ''', (user_id, room_id, reaction))
+
+        conn.commit()
+        conn.close()
+
+    def get_user_reactions(self, user_id: int):
+        conn, cursor = self.db_connect()
+        cursor.execute('''
+        SELECT * FROM rooms r
+        JOIN user_reactions ur ON r.id = ur.room_id,
+        WHERE ur.user_id = ?''')
+        rooms = cursor.fetchall()
+        conn.close()
+        return rooms
 
 db_manager = DataManager()
-# db_emoji = EmojiManager()
+db_reactor = ReactionManager()
